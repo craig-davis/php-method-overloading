@@ -9,52 +9,78 @@ trait Overloading
         $argumentTypes = [];
 
         foreach (get_class_methods($this) as $method) {
-            // Find only methods with matching names, ignore the overloaded name
+            // Find only classes in the form of $method+SomeOtherName
             if ($method === $overload || substr($method, 0, $length) !== $overload) {
                 continue;
             }
 
+            // Skip if we don't match the parameter count
             $reflection = new \ReflectionMethod($this, $method);
-
-            // The number of arguments is incorrect
-            if (count($args) < $reflection->getNumberOfRequiredParameters()) {
+            if (count($args) === $reflection->getNumberOfRequiredParameters()) {
                 continue;
             }
 
-            // The argument types match
-            $parameterTypes = [];
-            foreach ($reflection->getParameters() as $parameter) {
-                $parameterTypes[$parameter->getPosition()] = (string) $parameter->getType();
-            }
+            // Populate the types, cache when possible
+            $parameterTypes = $this->getParameterTypes($reflection);
+            $argumentTypes  = $argumentTypes ?: $this->getArgumentTypes($args);
 
-            if (empty($argumentTypes)) {
-                foreach ($args as $arg) {
-                    $argumentTypes[] = $this->getHintType($arg);
-                }
-            }
-
-            // TODO Handle partial matches for optional parameters
+            // Call the method if we have a match
             if ($parameterTypes === $argumentTypes) {
                 return call_user_func_array([$this, $method], $args);
             }
         }
 
-        throw new \LogicException('Incorrect type options for '.$overload);
+        // No appropriate delegate was found, throw an exception
+        throw new \LogicException(sprintf(
+            'Incorrect type options for %s with params: %s',
+            $overload,
+            implode(',', $argumentTypes)
+        ));
+    }
+
+    private function getParameterTypes(\ReflectionMethod $method)
+    {
+        $types = [];
+        foreach ($method->getParameters() as $parameter) {
+            $types[$parameter->getPosition()] = (string) $parameter->getType();
+        }
+
+        return $types;
+    }
+
+    private function getArgumentTypes(array $args)
+    {
+        $types = [];
+        foreach ($args as $arg) {
+            $types[] = $this->getHintType($arg);
+        }
+
+        return $types;
     }
 
     private function getHintType($var)
     {
-        // @codingStandardsIgnoreStart
-        if (is_array($var)) return "array";
-        if (is_bool($var)) return "bool";
-        if (is_float($var)) return "float";
-        if (is_int($var)) return "int";
-        if (is_null($var)) return "NULL";
-        if (is_numeric($var)) return "numeric";
-        if (is_object($var)) return get_class($var);
-        if (is_resource($var)) return "resource";
-        if (is_string($var)) return "string";
-        return "unknown type";
-        // @codingStandardsIgnoreEnd
+        $typeMap = [
+            'array'   => 'array',
+            'boolean' => 'bool',
+            'double'  => 'float',
+            'integer' => 'int',
+            'object'  => 'object',
+            'string'  => 'string',
+        ];
+
+        $type = gettype($var);
+
+        if (!array_key_exists($type, $typeMap)) {
+            throw new \LogicException('Unsupported type hint: '.$type);
+        }
+
+        $type = $typeMap[$type];
+
+        if ($type == 'object') {
+            $type = get_class($var);
+        }
+
+        return $type;
     }
 }
