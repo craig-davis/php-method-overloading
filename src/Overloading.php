@@ -44,6 +44,7 @@ trait Overloading
 
     private function getHintType($var)
     {
+        // @codingStandardsIgnoreStart
         if (is_array($var)) return "array";
         if (is_bool($var)) return "bool";
         if (is_float($var)) return "float";
@@ -54,5 +55,6 @@ trait Overloading
         if (is_resource($var)) return "resource";
         if (is_string($var)) return "string";
         return "unknown type";
+        // @codingStandardsIgnoreEnd
     }
 }

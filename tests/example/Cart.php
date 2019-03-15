@@ -14,7 +14,8 @@ class Cart
         return count($this->items);
     }
 
-    public function addItem(...$args) {
+    public function addItem(...$args)
+    {
         $this->__overload(__FUNCTION__, $args);
 
         return $this;
