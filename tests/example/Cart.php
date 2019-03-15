@@ -9,21 +9,28 @@ class Cart
 
     private $items = [];
 
-    public function addItem(...$args) {
-        $this->__overload(__FUNCTION__, $args);
+    public function cartSize(): int
+    {
+        return count($this->items);
     }
 
-    private function addItemByClass(Item $item)
+    public function addItem(...$args) {
+        $this->__overload(__FUNCTION__, $args);
+
+        return $this;
+    }
+
+    protected function addItemByClass(Item $item)
     {
         $this->items[] = $item;
     }
 
-    private function addItemById(int $itemId)
+    protected function addItemById(int $itemId)
     {
         $this->items[] = app(StockLocator::class)->with($itemId);
     }
 
-    private function addItemByDescription(string $description)
+    protected function addItemByDescription(string $description)
     {
         $this->items[] = new Item($description);
     }
