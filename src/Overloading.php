@@ -16,7 +16,7 @@ trait Overloading
 
             // Skip if we don't match the parameter count
             $reflection = new \ReflectionMethod($this, $method);
-            if (count($args) === $reflection->getNumberOfRequiredParameters()) {
+            if (count($args) !== $reflection->getNumberOfRequiredParameters()) {
                 continue;
             }
 
