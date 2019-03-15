@@ -1,4 +1,4 @@
-PHP Method Overloading
+PHP Method Overloading [![Build Status](https://travis-ci.org/craig-davis/php-method-overloading.svg?branch=master)](https://travis-ci.org/craig-davis/php-method-overloading)
 ================================================================================
 
 Add the `Overloading` trait to a class to help implement type hinted overloading and delegation.
