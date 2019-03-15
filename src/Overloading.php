@@ -52,13 +52,13 @@ trait Overloading
     {
         $types = [];
         foreach ($args as $arg) {
-            $types[] = $this->getHintType($arg);
+            $types[] = $this->convertTypeToHint($arg);
         }
 
         return $types;
     }
 
-    private function getHintType($var)
+    private function convertTypeToHint($var)
     {
         $typeMap = [
             'array'   => 'array',
