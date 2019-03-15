@@ -32,7 +32,7 @@ trait Overloading
 
         // No appropriate delegate was found, throw an exception
         throw new \LogicException(sprintf(
-            'Incorrect type options for %s with params: %s',
+            'No delegate found for %s with params: %s',
             $overload,
             implode(',', $argumentTypes)
         ));
