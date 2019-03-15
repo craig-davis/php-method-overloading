@@ -9,9 +9,10 @@ class OverloadingTest extends TestCase
 {
     public function testCanUseTrait()
     {
-        $item = new Item;
-        $id   = 9989;
-        $desc = 'New product description';
+        $item  = new Item;
+        $id    = 9989;
+        $desc  = 'Chocolate Candybar';
+        $price = 1.53;
 
         $mock = $this->getMockBuilder(Cart::class)
             ->setMethods([
@@ -34,11 +35,14 @@ class OverloadingTest extends TestCase
         $mock
             ->expects($this->once())
             ->method('addItemByDescription')
-            ->with($this->identicalTo($desc));
+            ->with(
+                $this->identicalTo($desc),
+                $this->identicalTo($price)
+            );
 
         $mock
             ->addItem($item)
             ->addItem($id)
-            ->addItem($desc);
+            ->addItem($desc, $price);
     }
 }

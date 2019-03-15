@@ -30,9 +30,11 @@ class Cart
         $this->items[] = app(StockLocator::class)->with($itemId);
     }
 
-    protected function addItemByDescription(string $description)
+    protected function addItemByDescription(string $description, float $price)
     {
-        $this->items[] = new Item($description);
+        $this->items[] = (new Item)
+            ->setDescription($description)
+            ->setPrice($price);
     }
 }
 
