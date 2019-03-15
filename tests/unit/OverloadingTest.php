@@ -14,7 +14,7 @@ class OverloadingTest extends TestCase
         $desc  = 'Chocolate Candybar';
         $price = 1.53;
 
-        $mock = $this->getMockBuilder(Cart::class)
+        $cart = $this->getMockBuilder(Cart::class)
             ->setMethods([
                 'addItemByClass',
                 'addItemById',
@@ -22,17 +22,17 @@ class OverloadingTest extends TestCase
             ])
             ->getMock();
 
-        $mock
+        $cart
             ->expects($this->once())
             ->method('addItemByClass')
             ->with($this->identicalTo($item));
 
-        $mock
+        $cart
             ->expects($this->once())
             ->method('addItemById')
             ->with($this->identicalTo($id));
 
-        $mock
+        $cart
             ->expects($this->once())
             ->method('addItemByDescription')
             ->with(
@@ -40,7 +40,7 @@ class OverloadingTest extends TestCase
                 $this->identicalTo($price)
             );
 
-        $mock
+        $cart
             ->addItem($item)
             ->addItem($id)
             ->addItem($desc, $price);

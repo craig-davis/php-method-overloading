@@ -10,7 +10,7 @@ $cart
     ->addItem('A candybar', 1.53);
 ```
 
-Delegates correctly to implementation for each parameter signature. 
+Delegates correctly to an implementation for each parameter signature. 
 
 ```php
 public function addItem(...$args);
@@ -19,3 +19,4 @@ protected function addItemByClass(Item $item);
 protected function addItemById(int $id);
 protected function addItemByDescription(string $description, float $price);
 ```
+
